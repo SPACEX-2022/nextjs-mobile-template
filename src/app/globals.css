@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/*避免 300ms 的点击延迟*/
+html {
+  touch-action: manipulation;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

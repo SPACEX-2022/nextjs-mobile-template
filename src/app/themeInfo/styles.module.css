@@ -1,0 +1,9 @@
+
+.tableThemeTitle {
+    writing-mode: vertical-lr;
+    text-align: center;
+}
+.tablePlateTitle {
+    /*writing-mode: vertical-lr;*/
+    white-space: pre;
+}
