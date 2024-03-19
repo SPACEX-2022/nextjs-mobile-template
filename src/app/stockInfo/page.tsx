@@ -13,6 +13,7 @@ export default function StockInfo() {
 // prettier-ignore
         const colorList = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
         const labelFont = 'bold 12px Sans-serif';
+        // @ts-ignore
         function calculateMA(dayCount, data) {
             let result = [];
             for (let i = 0, len = data.length; i < len; i++) {
@@ -39,6 +40,7 @@ export default function StockInfo() {
         const dataMA20 = calculateMA(20, data);
         const upColor = '#00da3c';
         const downColor = '#ec0000';
+        // @ts-ignore
         const option = {
             animation: false,
             color: colorList,
@@ -77,10 +79,12 @@ export default function StockInfo() {
                     fontSize: 12,
                     color: '#333'
                 },
+                // @ts-ignore
                 position: function (pos, params, el, elRect, size) {
                     const obj = {
                         top: 60
                     };
+                    // @ts-ignore
                     obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5;
                     return obj;
                 }
@@ -121,6 +125,7 @@ export default function StockInfo() {
                     boundaryGap: false,
                     axisLine: { lineStyle: { color: '#777' } },
                     axisLabel: {
+                        // @ts-ignore
                         formatter: function (value) {
                             return echarts.format.formatTime('MM-dd', value);
                         }

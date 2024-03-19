@@ -1,6 +1,7 @@
 'use client'
 import styles from './styles.module.css';
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
+import {request} from "@/services";
 
 const data = [
     {
@@ -48,35 +49,44 @@ export default function ThemeInfo() {
         return data[0].children.reduce((acc, curr) => acc + curr.children.length, 0);
     }, [])
 
+    useEffect(() => {
+        request('/api/visual/data/common/timeline',{
+            method: 'POST',
+            body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
+        })
+    }, []);
+
     let index = -1;
     return (
         <div>
             <table>
-                {
-                    data.map((item, itemIndex) => {
-                        return item.children.map((plate, plateIndex) => {
-                            return plate.children.map((child, childIndex) => {
-                                index++;
-                                return (
-                                    <tr key={child.name}>
-                                        {
-                                            index === 0 ?
-                                                <td className={styles.tableThemeTitle} rowSpan={count}>{ item.name }</td>
-                                                : null
-                                        }
-                                        {
-                                            childIndex === 0 ?
-                                                <td className={styles.tablePlateTitle} rowSpan={plate.children.length}>{ plate.name }</td>
-                                                : null
-                                        }
-                                        <td>{ child.name }</td>
-                                        <td>{ child.desc }</td>
-                                    </tr>
-                                )
+                <tbody>
+                    {
+                        data.map((item, itemIndex) => {
+                            return item.children.map((plate, plateIndex) => {
+                                return plate.children.map((child, childIndex) => {
+                                    index++;
+                                    return (
+                                        <tr key={child.name}>
+                                            {
+                                                index === 0 ?
+                                                    <td className={styles.tableThemeTitle} rowSpan={count}>{ item.name }</td>
+                                                    : null
+                                            }
+                                            {
+                                                childIndex === 0 ?
+                                                    <td className={styles.tablePlateTitle} rowSpan={plate.children.length}>{ plate.name }</td>
+                                                    : null
+                                            }
+                                            <td>{ child.name }</td>
+                                            <td>{ child.desc }</td>
+                                        </tr>
+                                    )
+                                })
                             })
                         })
-                    })
-                }
+                    }
+                </tbody>
             </table>
         </div>
     )

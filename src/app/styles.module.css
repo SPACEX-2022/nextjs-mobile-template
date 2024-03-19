@@ -1,0 +1,32 @@
+
+.rankTitle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    height: 40px;
+    /*background: linear-gradient(90deg, #e93c27 0%, #f9bf0000 98%);*/
+}
+
+.rankTitle:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #e93c27 0%, #f9bf0000 98%);
+    opacity: 0.15;
+}
+
+.logoImg {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.rankTop10Img {
+    height: 22px;
+    width: auto;
+}
