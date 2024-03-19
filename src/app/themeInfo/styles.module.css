@@ -3,31 +3,43 @@
     padding: 4px 8px;
 }
 
+.table {
+    width: 100%;
+    table-layout: auto;
+}
+
 .table td {
     border: 1px solid #C9CDD4;
 }
 
+.table tr td:last-child {
+    width: 100%;
+}
+
 .tableThemeTitle {
+    /*width: 30px;*/
     padding: 0 7px;
-    writing-mode: vertical-lr;
+    /*writing-mode: vertical-lr;*/
     color: #1d2129;
     text-align: center;
     font-size: 20px;
     font-weight: 600;
     font-family: PingFangSC-Medium;
     text-align: center;
-    /*line-height: 26px;*/
-    letter-spacing: 6px;
+    line-height: 26px;
+    white-space: pre;
+    /*letter-spacing: 6px;*/
 }
 .tablePlateTitle {
+    /*width: 50px;*/
     padding: 0 5px;
     /*writing-mode: vertical-lr;*/
     color: #1d2129;
-    white-space: pre;
+    /*white-space: pre;*/
     font-size: 16px;
     font-weight: 600;
     font-family: PingFangSC-Medium;
-    text-align: left;
+    text-align: center;
     line-height: 26px;
 }
 .tableStockName {

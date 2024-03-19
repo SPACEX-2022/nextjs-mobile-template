@@ -9,7 +9,8 @@ module.exports = {
       selectorBlackList: [/^.html/], //排除html样式
       replace: true,
       mediaQuery: false,
-      minPixelValue: 0
+      minPixelValue: 0,
+      exclude: /node_modules/,
     }
   },
 };

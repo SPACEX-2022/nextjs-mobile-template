@@ -1,4 +1,35 @@
 
+.container :global(.adm-list-body) {
+    background: #f7f8fa;
+}
+
+.header {
+    top: 0;
+    background: #fff;
+    z-index: 1;
+    left: 0;
+}
+
+.searchBarWrapper {
+    padding: 8px 16px;
+    position: sticky;
+}
+.searchBar {
+    --border-radius: 18px;
+    height: auto;
+}
+
+.searchBar :global(.adm-search-bar-input-box .adm-search-bar-input) {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    height: auto;
+}
+
+.searchBar :global(.adm-input-element) {
+    font-size: 14px;
+    line-height: 20px !important;
+}
+
 .rankTitle {
     position: relative;
     display: flex;
@@ -29,4 +60,43 @@
 .rankTop10Img {
     height: 22px;
     width: auto;
+}
+
+.listItem {
+    margin-bottom: 4px;
+    padding-left: 16px;
+}
+
+.listItem :global(.adm-list-item-content-main) {
+    position: relative;
+    padding: 15px 0;
+    display: flex;
+    align-items: center;
+
+    color: rgb(25, 25, 25);
+    font-family: PingFangSC-Medium;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    /*letter-spacing: 0;*/
+    text-align: left;
+}
+
+.listItem :global(.adm-list-item-content) {
+    border-top: none;
+}
+
+.listItemImg {
+    width: 52px;
+    height: 52px;
+    margin-right: 10px;
+}
+
+.listItemRankImg {
+    position: absolute;
+    top: 11px;
+    left: -10px;
+    width: 40px;
+    height: 40px;
+    /*margin-right: 10px;*/
 }

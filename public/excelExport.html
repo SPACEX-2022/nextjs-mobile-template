@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/antd@5.15.3/dist/antd.min.css">
+    <link rel="text/less" href="https://unpkg.com/antd@5.15.3/dist/antd.less">
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin src="https://unpkg.com/dayjs@1.11.10/dayjs.min.js"></script>
+
+    <script crossorigin src="https://unpkg.com/antd@5.15.3/dist/antd.min.js"></script>
+    <title>Document</title>
+    <script lang="javascript" src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    const {useState} = React;
+
+    const { Upload, TextArea, Row, Col, Button, Input, Space } = antd;
+
+    const App = () => {
+        const [result, setResult] = useState('222');
+
+
+        const onBeforeUpload = async (file) => {
+            console.log('file', file)
+            const arrayBuffer = await file.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer)
+            console.log('workbook', workbook)
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            const raw_data = XLSX.utils.sheet_to_json(worksheet, {header:1});
+            console.log(raw_data);
+
+            const DESC_INDEX = 3;
+            let themeData = {};
+            let lastPlate = {};
+
+            raw_data.forEach((row, rowIndex) => {
+                row.forEach((col, colIndex) => {
+                    if (colIndex === DESC_INDEX) return
+                    if (rowIndex === 0 && colIndex === 0) {
+                        themeData = {
+                            name: col,
+                            level: 1,
+                            children: [],
+                        }
+                    }
+                    if (colIndex === 1 && col != null && lastPlate.name !== col) {
+                        lastPlate = {
+                            name: col,
+                            level: 2,
+                            children: []
+                        };
+                        themeData.children.push(lastPlate);
+                    }
+                    if (colIndex === 2) {
+                        lastPlate.children.push({
+                            name: col,
+                            level: 3,
+                            desc: row[DESC_INDEX]
+                        })
+                    }
+                })
+            })
+
+            setResult(JSON.stringify(themeData));
+            console.log('exportData', themeData);
+        }
+        return (
+            <div>
+                <Space direction="vertical">
+                    <Upload.Dragger beforeUpload={onBeforeUpload}>
+                        <p className="ant-upload-drag-icon">
+                        </p>
+                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                        <p className="ant-upload-hint">
+                            Support for a single or bulk upload. Strictly prohibited from uploading company data or
+                            other
+                            banned files.
+                        </p>
+                    </Upload.Dragger>
+                    <Input.TextArea value={result} autoSize={{ minRows: 5, maxRows: 5 }} />
+                </Space>
+            </div>
+        )
+    }
+
+    const container = document.querySelector('#root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App/>)
+</script>
+</body>
+</html>
