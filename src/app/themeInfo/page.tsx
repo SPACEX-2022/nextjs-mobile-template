@@ -58,8 +58,8 @@ export default function ThemeInfo() {
 
     let index = -1;
     return (
-        <div>
-            <table>
+        <div className={styles.wrapper}>
+            <table className={styles.table}>
                 <tbody>
                     {
                         data.map((item, itemIndex) => {
@@ -78,8 +78,8 @@ export default function ThemeInfo() {
                                                     <td className={styles.tablePlateTitle} rowSpan={plate.children.length}>{ plate.name }</td>
                                                     : null
                                             }
-                                            <td>{ child.name }</td>
-                                            <td>{ child.desc }</td>
+                                            <td className={styles.tableStockName}>{ child.name }</td>
+                                            <td className={styles.tableStockDesc}>{ child.desc }</td>
                                         </tr>
                                     )
                                 })
@@ -88,6 +88,10 @@ export default function ThemeInfo() {
                     }
                 </tbody>
             </table>
+
+            <div className={styles.disclaimers}>
+                【免责声明】以上信息基于独立、客观、公正和审慎的原则整理，信息均来源于公开资料，本软件对这些信息的准确性，完整性，时效性，不作任何保证。本软件内容仅仅是查询使用，仅供参考，并不构成对任何人的投资建议，请自主决策，自担风险。
+            </div>
         </div>
     )
 }

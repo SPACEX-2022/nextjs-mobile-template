@@ -1,6 +1,8 @@
 import type {Metadata, Viewport} from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import dynamic from "next/dynamic";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +17,18 @@ export const viewport: Viewport = {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
+    minimumScale: 1,
     viewportFit: 'cover',
+    userScalable: false,
     // userScalable: false,
     // Also supported by less commonly used
     // interactiveWidget: 'resizes-visual',
 }
+
+// @ts-ignore
+// dynamic(() => import("amfe-flexible"), {
+//     ssr: false,
+// });
 
 export default function RootLayout({
   children,
@@ -28,7 +37,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+            {children}
+            <Script
+                src="./amfe-flexible.js"
+                strategy="beforeInteractive"
+            />
+        </body>
     </html>
   );
 }
