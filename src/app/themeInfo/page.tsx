@@ -4,6 +4,7 @@ import {useEffect, useMemo, useState} from "react";
 import {request} from "@/services";
 import {useRouter, useSearchParams} from "next/navigation";
 import {data} from "@/app/data";
+import {Metadata} from "next";
 
 export default function ThemeInfo() {
     const router = useRouter();
@@ -18,6 +19,7 @@ export default function ThemeInfo() {
         console.log(searchParams)
         const index = searchParams.get('index')
         setIndex(parseInt(index!));
+        document.title = data[index! as any].name.replace(/\n/g, "");
     }, []);
 
     const viewStock = () => {

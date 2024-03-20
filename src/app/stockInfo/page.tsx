@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 import {request} from "@/services";
 import {useEventListener} from "ahooks";
 import {useMounted} from "@/app/useMounted";
+import {data} from "@/app/data";
 
 export default function StockInfo() {
     const mounted = useMounted();
@@ -24,6 +25,7 @@ export default function StockInfo() {
         drawMoneyFlowChart('moneyFlowChart')
 
         drawTodayChart();
+        document.title = '格林美';
     }, [])
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
