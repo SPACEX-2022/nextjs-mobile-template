@@ -18,10 +18,6 @@ export default function ThemeInfo() {
         console.log(searchParams)
         const index = searchParams.get('index')
         setIndex(parseInt(index!));
-        request('/api/visual/data/common/timeline',{
-            method: 'POST',
-            body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
-        })
     }, []);
 
     let index = -1;

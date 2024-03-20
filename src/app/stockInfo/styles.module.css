@@ -1,5 +1,330 @@
 
+.redText {
+    color: rgb(255, 64, 17);
+}
+.greenText {
+    color: rgb(0, 124, 87);
+}
+
+.container {
+    padding: 8px;
+}
+
+.stockInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    padding: 0 8px;
+}
+
+.stockName {
+    color: rgba(0, 0, 0, 0.85);
+    font-family: 苹方-简;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.stockCode {
+    color: rgba(0, 0, 0, 0.85);
+    font-family: 苹方-简;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.stockData {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 4px;
+
+    /* 填充/浅色 禁用 */
+    background: rgb(247, 248, 250);
+}
+
+.dateSelect :global(.adm-capsule-tabs-tab-wrapper) {
+    flex: none;
+    padding: 0;
+}
+.dateSelect :global(.adm-capsule-tabs-header) {
+    padding: 10px 0 8px;
+    border-bottom: none;
+}
+.dateSelect :global(.adm-capsule-tabs-tab) {
+    /* 矩形备份 33 */
+    /*position: absolute;*/
+    margin-right: 8px;
+    padding: 0 4px;
+    /*width: 28px;*/
+    height: 16px;
+    border-radius: 2px;
+    /*background: rgb(0, 122, 255);*/
+    /*color: rgb(255, 255, 255);*/
+    font-family: 苹方-简;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.priceData {
+}
+
+.price {
+    margin-bottom: 5px;
+    color: rgb(255, 64, 17);
+    font-family: 苹方-简;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: center;
+}
+
+.upPrice {
+    color: rgb(255, 64, 17);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: justify;
+}
+
+.moneyFlowDataWrapper {
+    display: flex;
+}
+.moneyFlowInfo {
+    flex: 0 0 39.2%;
+    margin-right: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+.moneyFlowLabelWrap {}
+.moneyFlowLabel {
+    margin-bottom: 4px;
+    color: rgb(29, 33, 41);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+    white-space: nowrap;
+}
+.moneyFlowLabel:last-child {
+    margin-bottom: 0;
+}
+.moneyFlowVal:last-child {
+    margin-bottom: 0;
+}
+.moneyFlowVal {
+    margin-bottom: 4px;
+    color: rgb(255, 64, 17);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: right;
+}
+.moneyFlowData {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: space-between;
+}
+.moneyFlowData .moneyFlowLabel {
+    margin-right: 9px;
+}
+.moneyFlowData .moneyFlowVal {
+    margin-left: 5px;
+}
+.moneyFlowChart {
+    padding-top: 2px;
+    flex: 1 1 auto;
+    height: calc(100% - 4px);
+    /*width: 120px;*/
+}
+
+.tranactionData {
+    display: flex;
+    flex-direction: column;
+}
+.tranactionDataItem {
+    display: flex;
+}
+.tranactionDataItem:first-child {
+    margin-bottom: 8px;
+}
+.dataLabel {
+    color: rgb(29, 33, 41);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+.dataValue {
+    color: rgb(255, 64, 17);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: justify;
+}
+
 .chart {
-    width: 430px;
-    height: 500px;
+    width: 100%;
+    height: 191px;
+    margin-bottom: 12px;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+.sectionTitle {
+    position: relative;
+    padding-bottom: 2px;
+    padding-left: 8px;
+    color: rgb(134, 144, 156);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0px;
+    text-align: left;
+    /* 颜色-边框/一般 */
+    border-bottom: 1px solid rgb(229, 230, 235);
+}
+.sectionTitle:before {
+    content: '';
+    /* 矩形备份 33 */
+    position: absolute;
+    width: 4px;
+    height: 12px;
+    left: 0;
+    top: 3px;
+    border-radius: 2px;
+    background: rgb(0, 122, 255);
+}
+
+.sectionContent {
+    padding-top: 8px;
+}
+
+.transactionData {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.transactionDataLabel {
+    color: rgb(29, 33, 41);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+.transactionDataValue {
+    color: rgb(255, 64, 17);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: right;
+}
+
+.divisionLine {
+    margin: 8px 0;
+    /* 颜色-边框/一般 */
+    border-top: 1px dashed rgb(229, 230, 235);
+}
+
+.intervalData {
+    margin-bottom: 4px;
+    color: rgb(29, 33, 41);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+.intervalDataLabel {
+
+}
+.intervalDataValue {
+
+}
+
+.clueUl {
+    margin-top: 3px;
+    list-style: none;
+    padding: 0;
+}
+.clueLi {
+    display: flex;
+}
+.clueLi:last-child .clueLine:after {
+    display: none;
+}
+.clueTime {
+    flex: 0 0 60px;
+    color: rgb(134, 144, 156);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: right;
+    white-space: nowrap;
+}
+.clueLine {
+    position: relative;
+    width: 8px;
+    margin: 0 10px;
+}
+.clueLine:before {
+    content: '';
+    /* 椭圆 1 */
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    left: 0;
+    top: 4px;
+    border-radius: 50%;
+    /* 颜色-边框/一般 */
+    background: rgb(229, 230, 235);
+}
+.clueLine:after {
+    content: '';
+    /* 椭圆 1 */
+    position: absolute;
+    width: 1px;
+    height: calc(100% - 12px);
+    left: 3.5px;
+    top: 14px;
+    /* 颜色-边框/一般 */
+    background: rgb(229, 230, 235);
+}
+.clueText {
+    padding-bottom: 10px;
+    color: rgb(29, 33, 41);
+    font-family: 苹方-简;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
 }

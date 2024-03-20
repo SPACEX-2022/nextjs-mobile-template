@@ -6,5 +6,7 @@ export function request(url: string, options: RequestInit = {}) {
         headers: {
             'content-type': 'application/json',
         },
-    }, options))
+    }, options)).then(res => {
+        return res.json()
+    })
 }
