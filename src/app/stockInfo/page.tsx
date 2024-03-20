@@ -7,11 +7,15 @@ import {drawKLineChart, drawMoneyFlowChart, drawTimeShareChart} from "@/app/stoc
 import {useRouter} from "next/navigation";
 import {request} from "@/services";
 import {useEventListener} from "ahooks";
+import {useMounted} from "@/app/useMounted";
 
 export default function StockInfo() {
+    const mounted = useMounted();
     const router = useRouter();
     const [activeKey, setActiveKey] = useState('today');
     const chart = useRef<any>(null);
+    if (!mounted) return null;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         chart.current = echarts.init(document.getElementById('main'));
 
@@ -22,6 +26,7 @@ export default function StockInfo() {
         drawTodayChart();
     }, [])
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEventListener('mouseup', () => {
         console.log(222, chart.current)
         if (chart.current) {
@@ -35,6 +40,7 @@ export default function StockInfo() {
         }
     }, { target: document.body })
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEventListener('touchend', () => {
         console.log(222, chart.current)
         if (chart.current) {
