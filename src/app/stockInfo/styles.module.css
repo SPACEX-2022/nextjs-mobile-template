@@ -8,6 +8,7 @@
 
 .container {
     padding: 8px;
+    /*user-select: none;*/
 }
 
 .stockInfo {
@@ -186,6 +187,7 @@
     width: 100%;
     height: 191px;
     margin-bottom: 12px;
+    touch-action: none;
 }
 
 .section {

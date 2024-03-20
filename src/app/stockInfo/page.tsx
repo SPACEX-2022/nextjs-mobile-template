@@ -1,22 +1,57 @@
 'use client'
 import * as echarts from 'echarts';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import styles from './styles.module.css';
 import {CapsuleTabs, Grid, NavBar} from "antd-mobile";
 import {drawKLineChart, drawMoneyFlowChart, drawTimeShareChart} from "@/app/stockInfo/charts";
 import {useRouter} from "next/navigation";
 import {request} from "@/services";
+import {useEventListener} from "ahooks";
 
 export default function StockInfo() {
     const router = useRouter();
     const [activeKey, setActiveKey] = useState('today');
+    const chart = useRef<any>(null);
     useEffect(() => {
+        chart.current = echarts.init(document.getElementById('main'));
+
         // drawTimeShareChart('main')
         // drawKLineChart('main')
         drawMoneyFlowChart('moneyFlowChart')
 
         drawTodayChart();
     }, [])
+
+    useEventListener('mouseup', () => {
+        console.log(222, chart.current)
+        if (chart.current) {
+            chart.current.dispatchAction({
+                type: 'hideTip'
+            })
+            chart.current.dispatchAction({
+                type: 'updateAxisPointer',
+                currTrigger: 'leave'
+            });
+        }
+    }, { target: document.body })
+
+    useEventListener('touchend', () => {
+        console.log(222, chart.current)
+        if (chart.current) {
+            chart.current.dispatchAction({
+                type: 'hideTip'
+            })
+            chart.current.dispatchAction({
+                type: 'updateAxisPointer',
+                currTrigger: 'leave'
+            });
+        }
+    }, { target: document.body })
+
+    // useEventListener('dragstart', e => {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    // }, { target: document.body, passive: true })
 
     const drawTodayChart = () => {
         request('/api/visual/data/common/timeline',{
@@ -31,7 +66,7 @@ export default function StockInfo() {
                 xList.push(time);
                 list.push(parseFloat(val));
             })
-            drawTimeShareChart('main', xList, list)
+            drawTimeShareChart(chart.current, xList, list)
         })
     }
 
@@ -42,8 +77,13 @@ export default function StockInfo() {
         }).then(res => {
             const data = res.dataResult[0].lineChartComp.value;
             console.log(222, res, data)
-            // const list: number[] = [];
-            // const xList: string[] = [];
+            const dateList: string[] = [];
+            const kLineChart: number[][] = [];
+            data.slice(1).forEach(([date, openPrice, closePrice, lowestPrice, highestPrice, quoteChange, riseAndFallVal]: any[]) => {
+                dateList.push(date);
+                kLineChart.push([openPrice, closePrice, lowestPrice, highestPrice]);
+            })
+            drawKLineChart(chart.current, dateList, kLineChart)
             // data.slice(1).forEach(([time, val]: any[]) => {
             //     xList.push(time);
             //     list.push(parseFloat(val));
@@ -112,7 +152,7 @@ export default function StockInfo() {
                 <CapsuleTabs.Tab title='今日' key='today' />
                 <CapsuleTabs.Tab title='1个月' key='month' />
             </CapsuleTabs>
-            <div id="main" className={styles.chart}></div>
+            <div id="main" className={styles.chart} ></div>
             <div className={styles.section}>
                 <div className={styles.sectionTitle}>
                     今日资金流向（万元）

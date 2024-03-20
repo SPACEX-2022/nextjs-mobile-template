@@ -20,6 +20,10 @@ export default function ThemeInfo() {
         setIndex(parseInt(index!));
     }, []);
 
+    const viewStock = () => {
+        router.push('stockInfo')
+    }
+
     let index = -1;
     return (
         <div className={styles.wrapper}>
@@ -42,7 +46,7 @@ export default function ThemeInfo() {
                                                     <td className={styles.tablePlateTitle} rowSpan={plate.children.length}>{ plate.name }</td>
                                                     : null
                                             }
-                                            <td className={styles.tableStockName}>{ child.name }</td>
+                                            <td className={styles.tableStockName} onClick={viewStock}>{ child.name }</td>
                                             <td className={styles.tableStockDesc}>{ child.desc }</td>
                                         </tr>
                                     )
