@@ -14,7 +14,7 @@ export default function StockInfo() {
     const router = useRouter();
     const [activeKey, setActiveKey] = useState('today');
     const chart = useRef<any>(null);
-    if (!mounted) return null;
+    if (typeof document === 'undefined') return null;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         chart.current = echarts.init(document.getElementById('main'));
