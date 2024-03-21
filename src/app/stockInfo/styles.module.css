@@ -285,7 +285,8 @@
     display: none;
 }
 .clueTime {
-    flex: 0 0 60px;
+    width: 0;
+    flex: 0 0 70px;
     color: rgb(134, 144, 156);
     font-family: 苹方-简;
     font-size: 12px;
