@@ -2,31 +2,56 @@
 import * as echarts from 'echarts';
 import {useEffect, useRef, useState} from "react";
 import styles from './styles.module.css';
-import {CapsuleTabs, Grid, NavBar} from "antd-mobile";
+import {CapsuleTabs, Grid, NavBar, Skeleton} from "antd-mobile";
 import {drawKLineChart, drawMoneyFlowChart, drawTimeShareChart} from "@/app/stockInfo/charts";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import {request} from "@/services";
 import {useEventListener} from "ahooks";
 import {useMounted} from "@/app/useMounted";
 import {data} from "@/app/data";
 
 export default function StockInfo() {
+    const [pageLoading, setPageLoading] = useState(true)
     const mounted = useMounted();
     const router = useRouter();
+    const searchParams = useSearchParams()
     const [activeKey, setActiveKey] = useState('today');
     const chart = useRef<any>(null);
+    const response = useRef<any>({});
+    const name = searchParams.get('name');
     if (typeof document === 'undefined') return null;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        chart.current = echarts.init(document.getElementById('main'));
+        document.title = name!;
 
-        // drawTimeShareChart('main')
-        // drawKLineChart('main')
-        drawMoneyFlowChart('moneyFlowChart')
+        Promise.all([
+            request('/api/visual/data/common/timeline',{
+                method: 'POST',
+                body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
+            }),
+            request('/api/visual/data/common/kline',{
+                method: 'POST',
+                body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
+            }),
+        ]).then(([timelineData, kLineData]) => {
+            response.current.timelineData = timelineData;
+            response.current.kLineData = kLineData;
 
-        drawTodayChart();
-        document.title = '格林美';
+            setPageLoading(false);
+        })
     }, [])
+
+    useEffect(() => {
+        if (!pageLoading) {
+            chart.current = echarts.init(document.getElementById('main'));
+
+            // drawTimeShareChart('main')
+            // drawKLineChart('main')
+            drawMoneyFlowChart('moneyFlowChart')
+
+            drawTodayChart();
+        }
+    }, [pageLoading]);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEventListener('mouseup', () => {
@@ -62,42 +87,32 @@ export default function StockInfo() {
     // }, { target: document.body, passive: true })
 
     const drawTodayChart = () => {
-        request('/api/visual/data/common/timeline',{
-            method: 'POST',
-            body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
-        }).then(res => {
-            const data = res.dataResult[0].lineChartComp.value;
-            console.log(222, res, data)
-            const list: number[] = [];
-            const xList: string[] = [];
-            data.slice(1).forEach(([time, val]: any[]) => {
-                xList.push(time);
-                list.push(parseFloat(val));
-            })
-            drawTimeShareChart(chart.current, xList, list)
+        const data = response.current.timelineData.dataResult[0].lineChartComp.value;
+        console.log(222, response.current.timelineData, data)
+        const list: number[] = [];
+        const xList: string[] = [];
+        data.slice(1).forEach(([time, val]: any[]) => {
+            xList.push(time);
+            list.push(parseFloat(val));
         })
+        drawTimeShareChart(chart.current, xList, list)
     }
 
     const drawMonthChart = () => {
-        request('/api/visual/data/common/kline',{
-            method: 'POST',
-            body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
-        }).then(res => {
-            const data = res.dataResult[0].lineChartComp.value;
-            console.log(222, res, data)
-            const dateList: string[] = [];
-            const kLineChart: number[][] = [];
-            data.slice(1).forEach(([date, openPrice, closePrice, lowestPrice, highestPrice, quoteChange, riseAndFallVal]: any[]) => {
-                dateList.push(date);
-                kLineChart.push([openPrice, closePrice, lowestPrice, highestPrice]);
-            })
-            drawKLineChart(chart.current, dateList, kLineChart)
-            // data.slice(1).forEach(([time, val]: any[]) => {
-            //     xList.push(time);
-            //     list.push(parseFloat(val));
-            // })
-            // drawTimeShareChart('main', xList, list)
+        const data = response.current.kLineData.dataResult[0].lineChartComp.value;
+        console.log(222, response.current.kLineData, data)
+        const dateList: string[] = [];
+        const kLineChart: number[][] = [];
+        data.slice(1).forEach(([date, openPrice, closePrice, lowestPrice, highestPrice, quoteChange, riseAndFallVal]: any[]) => {
+            dateList.push(date);
+            kLineChart.push([openPrice, closePrice, lowestPrice, highestPrice]);
         })
+        drawKLineChart(chart.current, dateList, kLineChart)
+        // data.slice(1).forEach(([time, val]: any[]) => {
+        //     xList.push(time);
+        //     list.push(parseFloat(val));
+        // })
+        // drawTimeShareChart('main', xList, list)
     }
 
     const onChange = (key: string) => {
@@ -113,11 +128,19 @@ export default function StockInfo() {
         router.back();
     }
 
+    if (pageLoading) {
+        return (
+            <div className={styles.container}>
+                <Skeleton.Title animated />
+                <Skeleton.Paragraph lineCount={7} animated />
+            </div>
+        )
+    }
+
     return (
         <div className={styles.container}>
-            {/*<NavBar onBack={back}>格林美</NavBar>*/}
             <div className={styles.stockInfo}>
-                <div className={styles.stockName}>格林美</div>
+                <div className={styles.stockName}>{ name }</div>
                 <div className={styles.stockCode}>（002340）</div>
             </div>
             <div className={styles.stockData}>
@@ -312,29 +335,38 @@ export default function StockInfo() {
                     <ul className={styles.clueUl}>
                         <li className={styles.clueLi}>
                             <div className={styles.clueTime}>
-                                刚刚
+                                2023-11-26
                             </div>
                             <div className={styles.clueLine}></div>
                             <div className={styles.clueText}>
-                                在法兰克福上市的谷歌股票上涨1.65%，报道称苹果正与谷歌就人工智能 洽谈合作。
+                                赛力斯集团回应华为成立智能汽车新公司：已收到共同投资的邀请
                             </div>
                         </li>
                         <li className={styles.clueLi}>
                             <div className={styles.clueTime}>
-                                09:30
+                                2024-10-09
                             </div>
                             <div className={styles.clueLine}></div>
                             <div className={styles.clueText}>
-                                在法兰克福上市的谷歌股票上涨1.65%，报道称苹果正与谷歌就人工智能 洽谈合作。
+                                问界新M7引发“涟漪效应”：M9盲订超8千台，赛力斯销量涨六成
                             </div>
                         </li>
                         <li className={styles.clueLi}>
                             <div className={styles.clueTime}>
-                                1月23日
+                                2023-09-28
                             </div>
                             <div className={styles.clueLine}></div>
                             <div className={styles.clueText}>
-                                在法兰克福上市的谷歌股票上涨1.65%，报道称苹果正与谷歌就人工智能 洽谈合作。
+                                主力资金监控：赛力斯净买入超10亿元
+                            </div>
+                        </li>
+                        <li className={styles.clueLi}>
+                            <div className={styles.clueTime}>
+                                2023-09-26
+                            </div>
+                            <div className={styles.clueLine}></div>
+                            <div className={styles.clueText}>
+                                博俊科技：已为赛力斯问界M9供应车身件
                             </div>
                         </li>
                     </ul>

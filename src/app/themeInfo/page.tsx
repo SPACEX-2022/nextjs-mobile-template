@@ -19,8 +19,8 @@ export default function ThemeInfo() {
         document.title = data[index! as any][0][0].val!.replace(/\n/g, "");
     }, []);
 
-    const viewStock = () => {
-        router.push('stockInfo')
+    const viewStock = (name: string) => {
+        router.push('stockInfo?name=' + name)
     }
 
     const head = data[dataIndex][0];
@@ -74,7 +74,7 @@ export default function ThemeInfo() {
                                                 return (
                                                     <td key={colIndex}
                                                         className={styles.tableStockName}
-                                                        onClick={viewStock}>
+                                                        onClick={() => viewStock(col.val)}>
                                                         {col.val}
                                                     </td>
                                                 )

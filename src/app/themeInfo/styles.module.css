@@ -54,7 +54,7 @@
 }
 .tablePlateTitle {
     /*width: 50px;*/
-    padding: 0 5px;
+    padding: 24px 5px;
     /*writing-mode: vertical-lr;*/
     color: #1d2129;
     white-space: pre;
@@ -69,7 +69,7 @@
 }
 .tablePlateTitlePercent {
     position: absolute;
-    bottom: -2px;
+    bottom: -4px;
     left: 50%;
     transform: translateX(-50%) translateY(100%);
     /*color: #d02a00;*/

@@ -117,10 +117,14 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
                     }
                 },
                 splitLine: {
-                    show: false,
+                    show: true,
+                    interval: (i: number) => {
+                        console.log(i)
+                        return [0].includes(i)
+                    },
                     lineStyle: {
-                        color: 'rgb(234, 234, 234)',
-                        type: 'dashed'
+                        color: 'rgb(204, 204, 204)',
+                        // type: 'dashed'
                     }
                 },
                 min: 'dataMin',
@@ -157,7 +161,7 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
                 scale: true,
                 splitNumber: 1,
                 axisLine: { lineStyle: { color: 'rgb(204, 204, 204)' } },
-                splitLine: { show: true },
+                splitLine: { show: true, lineStyle: { color: 'rgb(204, 204, 204)' } },
                 axisTick: { show: false },
                 axisLabel: {
                     show: false,
@@ -178,7 +182,7 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
         grid: [
             {
                 left: 0,
-                right: 0,
+                right: 1,
                 top: 0,
                 bottom: 20,
                 containLabel: false,

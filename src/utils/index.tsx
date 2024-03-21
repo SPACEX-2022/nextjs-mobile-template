@@ -5,9 +5,10 @@ function randomPercent() {
     return _.random(-10, 10, true);
 }
 
-export function RandomPercent(props: { color?: boolean }) {
+export function RandomPercent(props: { color?: boolean, symbol?: boolean }) {
     const {
-        color = true
+        color = true,
+        symbol = true,
     } = props;
 
     const [num] = useState(randomPercent())
@@ -16,10 +17,9 @@ export function RandomPercent(props: { color?: boolean }) {
     let prefix = '';
     if (num < 0) {
         if (color) fontClass = 'downColor';
-        // prefix = '-';
     } else if (num > 0) {
         if (color) fontClass = 'upColor';
-        prefix = '+';
+        if (symbol) prefix = '+';
     }
 
     return (
