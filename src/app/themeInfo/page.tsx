@@ -17,6 +17,7 @@ export default function ThemeInfo() {
         const index = searchParams.get('index')
         setIndex(parseInt(index!));
         document.title = data[index! as any][0][0].val!.replace(/\n/g, "");
+        router.prefetch('stockInfo')
     }, []);
 
     const viewStock = (name: string) => {

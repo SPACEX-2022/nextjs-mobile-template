@@ -18,6 +18,8 @@ import img9 from './images/img9.png';
 import rank1Img from './images/rank1@2x.png';
 import rank2Img from './images/rank2@2x.png';
 import rank3Img from './images/rank3@2x.png';
+import {useEffect} from "react";
+import Link from "next/link";
 
 const imgList = [
     img1.src,
@@ -42,6 +44,10 @@ export default function Home() {
     const onClick = (index: number) => {
         router.push('themeInfo?index=' + index)
     }
+
+    useEffect(() => {
+        router.prefetch('themeInfo')
+    }, [])
 
     return (
         <main className={styles.container}>
