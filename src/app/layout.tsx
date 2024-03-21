@@ -1,17 +1,21 @@
 import type {Metadata, Viewport} from "next";
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import {Suspense} from "react";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({subsets: ["latin"]});
 
 export const metadata: Metadata = {
-  title: "题材库",
-  description: "查看最新题材库排行榜！",
-  icons: null,
-  // viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover",
+    title: "题材库-定力数影",
+    description: "查看最新题材库排行榜！",
+    icons: null,
+    openGraph: {
+        title: '题材库-定力数影',
+        images: ['/previewImg.png'],
+    },
+    // viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover",
 };
 
 export const viewport: Viewport = {
@@ -32,21 +36,21 @@ export const viewport: Viewport = {
 // });
 
 export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
+                                       children,
+                                   }: Readonly<{
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
+    return (
+        <html lang="en">
         <body className={inter.className}>
-            <Suspense>
-                {children}
-            </Suspense>
-            <Script
-                src="./amfe-flexible.js"
-                strategy="beforeInteractive"
-            />
+        <Suspense>
+            {children}
+        </Suspense>
+        <Script
+            src="./amfe-flexible.js"
+            strategy="beforeInteractive"
+        />
         </body>
-    </html>
-  );
+        </html>
+    );
 }
