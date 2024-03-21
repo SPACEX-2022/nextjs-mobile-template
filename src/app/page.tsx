@@ -13,6 +13,8 @@ import img4 from './images/img4.png';
 import img5 from './images/img5.png';
 import img6 from './images/img6.png';
 import img7 from './images/img7.png';
+import img8 from './images/img8.png';
+import img9 from './images/img9.png';
 import rank1Img from './images/rank1@2x.png';
 import rank2Img from './images/rank2@2x.png';
 import rank3Img from './images/rank3@2x.png';
@@ -25,6 +27,8 @@ const imgList = [
     img5.src,
     img6.src,
     img7.src,
+    img8.src,
+    img9.src,
 ]
 
 const imgRankList = [
@@ -56,7 +60,7 @@ export default function Home() {
                         <List.Item key={row[0][0].val} className={styles.listItem} onClick={() => onClick(index)}>
                             { index <= 2 ? <img className={styles.listItemRankImg} src={imgRankList[index]} alt=""/> : null }
                             <img className={styles.listItemImg} src={imgList[index] || imgList[0]} alt=""/>
-                            {row[0][0].val}
+                            {row[0][0].val.replace(/\n/g, '')}
                         </List.Item>
                     ))
                 }
