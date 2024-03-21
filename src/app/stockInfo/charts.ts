@@ -395,7 +395,7 @@ export function drawTimeShareChart(chart: any, xList: string[], list: number[]) 
     chart.setOption(option, true);
 }
 
-export function drawMoneyFlowChart(id: string) {
+export function drawMoneyFlowChart(id: string, data: number[]) {
     const labelRight = {
         position: 'right'
     };
@@ -441,17 +441,13 @@ export function drawMoneyFlowChart(id: string) {
                 barCategoryGap: 9,
                 // barWidth: 12,
                 itemStyle: {
-                    color: ({ dataIndex, data }: any) => ['rgb(255, 64, 17)', 'rgb(0, 124, 87)'][1 - dataIndex % 2],
+                    color: ({ dataIndex, data }: any) => data.value > 0 ? 'rgb(255, 64, 17)' : 'rgb(0, 124, 87)',
                 },
                 label: {
                     show: false,
                     formatter: '{b}'
                 },
-                data: [
-                    { value: -0.07, label: labelRight },
-                    { value: -0.09, label: labelRight },
-                    0.2,
-                ]
+                data: data.map(i => ({ value: i, label: { position: i > 0 ? 'right' : 'left' } }))
             }
         ]
     };

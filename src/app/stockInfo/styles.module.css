@@ -76,11 +76,12 @@
 }
 
 .priceData {
+    flex:  0 0 85px;
 }
 
 .price {
     margin-bottom: 5px;
-    color: rgb(255, 64, 17);
+    /*color: rgb(255, 64, 17);*/
     font-family: 苹方-简;
     font-size: 16px;
     font-weight: 500;
@@ -96,7 +97,7 @@
     font-weight: 400;
     line-height: 16px;
     letter-spacing: 0px;
-    text-align: justify;
+    text-align: center;
 }
 
 .moneyFlowDataWrapper {
@@ -238,7 +239,7 @@
     text-align: left;
 }
 .transactionDataValue {
-    color: rgb(255, 64, 17);
+    /*color: rgb(255, 64, 17);*/
     font-family: 苹方-简;
     font-size: 12px;
     font-weight: 400;
@@ -254,6 +255,8 @@
 }
 
 .intervalData {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 4px;
     color: rgb(29, 33, 41);
     font-family: 苹方-简;

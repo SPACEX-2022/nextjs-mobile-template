@@ -2,60 +2,166 @@
 import * as echarts from 'echarts';
 import {useEffect, useRef, useState} from "react";
 import styles from './styles.module.css';
-import {CapsuleTabs, Grid, NavBar, Skeleton} from "antd-mobile";
+import {CapsuleTabs, Grid, NavBar, ResultPage, Skeleton} from "antd-mobile";
 import {drawKLineChart, drawMoneyFlowChart, drawTimeShareChart} from "@/app/stockInfo/charts";
 import {useRouter, useSearchParams} from "next/navigation";
 import {request} from "@/services";
-import {useEventListener} from "ahooks";
+import {useEventListener, useLatest, useSetState} from "ahooks";
 import {useMounted} from "@/app/useMounted";
 import {data} from "@/app/data";
+import {random, RandomPercent} from "@/utils";
+import dayjs from "dayjs";
 
 export default function StockInfo() {
     const [pageLoading, setPageLoading] = useState(true)
+    const [pageError, setPageError] = useSetState({
+        show: false,
+        title: 'Error',
+        desc: '服务器出错，请稍后重试',
+    })
     const mounted = useMounted();
     const router = useRouter();
     const searchParams = useSearchParams()
     const [activeKey, setActiveKey] = useState('today');
     const chart = useRef<any>(null);
+    const [secucode, setSecucode] = useState<string>('000001.SH');
     const response = useRef<any>({});
     const name = searchParams.get('name');
+    const latestActiveKeyRef = useLatest(activeKey);
+
+    const [randomData] = useSetState({
+        vol: random(100, 1000),
+        turnoverRate: random(1, 10, 2),
+        limit: random(1, 10, 2),
+        mainInFlow: random(10000, 100000),
+        mainOutFlow: random(10000, 100000),
+        netFlow: random(-50000, 50000),
+        bigOrder: random(-50000, 50000),
+        midOrder: random(-50000, 50000),
+        smallOrder: random(-50000, 50000),
+    })
+    const [demoData, setDemoData] = useSetState({
+        yesterdayClose: 0,
+        open: 0,
+        close: 0,
+        lowest: 0,
+        highest: 0,
+        upDownRange: 0,
+        upDownValue: 0,
+        ...randomData,
+    })
+
+
     if (typeof document === 'undefined') return null;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         document.title = name!;
 
-        Promise.all([
-            request('/api/visual/data/common/timeline',{
-                method: 'POST',
-                body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
-            }),
-            request('/api/visual/data/common/kline',{
-                method: 'POST',
-                body: JSON.stringify({ code: '000001.SH', time: 1710731514000 }),
-            }),
-        ]).then(([timelineData, kLineData]) => {
-            response.current.timelineData = timelineData;
-            response.current.kLineData = kLineData;
+        request('/api/visual/dict/szbCompanyQry',{
+            method: 'POST',
+            body: JSON.stringify({ criterion: name }),
+        }).then((res) => {
+            if (res.code !== '0') {
+                setPageError({
+                    desc: res.message
+                })
+                throw new Error();
+            }
+
+            // setSecucode(res.dataResult.chiNameMatch[0].secucode)
+            return Promise.all([
+                request('/api/visual/data/common/timeline',{
+                    method: 'POST',
+                    body: JSON.stringify({ code: secucode, time: 1710731514000 }),
+                }),
+                request('/api/visual/data/common/kline',{
+                    method: 'POST',
+                    body: JSON.stringify({ code: secucode, time: 1710731514000 }),
+                }),
+            ])
+        }).then(([timelineData, kLineData]) => {
+            if (timelineData.code !== '0') {
+                setPageError({
+                    desc: timelineData.message
+                })
+                throw new Error();
+            }
+            if (kLineData.code !== '0') {
+                setPageError({
+                    desc: kLineData.message
+                })
+                throw new Error();
+            }
+            response.current.timelineData = timelineData.dataResult[0].lineChartComp.value;
+            response.current.kLineData = kLineData.dataResult[0].lineChartComp.value;
+
+            initDemoData();
 
             setPageLoading(false);
+        }).catch(e => {
+            console.log(e)
+            setPageLoading(false);
+
+            setPageError({
+                show: true,
+            });
         })
     }, [])
 
+    const initDemoData = () => {
+        const [,open, close, lowest, highest, upDownRange, upDownValue] = response.current.kLineData[response.current.kLineData.length - 1]
+        const [,, yesterdayClose] = response.current.kLineData[response.current.kLineData.length - 2]
+
+        setDemoData({
+            yesterdayClose: parseFloat(yesterdayClose),
+            open: parseFloat(open),
+            close: parseFloat(close),
+            lowest: parseFloat(lowest),
+            highest: parseFloat(highest),
+            upDownRange,
+            upDownValue,
+            ...randomData,
+        })
+    }
+
     useEffect(() => {
-        if (!pageLoading) {
+        if (!pageLoading && !pageError.show) {
             chart.current = echarts.init(document.getElementById('main'));
 
             // drawTimeShareChart('main')
             // drawKLineChart('main')
-            drawMoneyFlowChart('moneyFlowChart')
+            drawMoneyFlowChart('moneyFlowChart', [demoData.bigOrder, demoData.midOrder, demoData.smallOrder].reverse())
 
             drawTodayChart();
+            chart.current.on('showTip', (e: any) => {
+                const { dataIndex } = e;
+                console.log(dataIndex)
+                if (latestActiveKeyRef.current === 'today') {
+                    setDemoData({
+                        close: parseFloat(response.current.timelineData.slice(1)[dataIndex][1])
+                    })
+                    // console.log(parseFloat(response.current.timelineData.slice(1)[dataIndex][1]))
+                } else {
+                    const [, open, close, lowest, highest, quoteChange, riseAndFallVal] = response.current.kLineData.slice(1)[dataIndex];
+                    console.log(open, close)
+                    setDemoData({
+                        // yesterdayClose: parseFloat(yesterdayClose),
+                        open: parseFloat(open),
+                        close: parseFloat(close),
+                        lowest: parseFloat(lowest),
+                        highest: parseFloat(highest),
+                    })
+                }
+            })
+            chart.current.on('hideTip', (e: any) => {
+                initDemoData();
+            })
         }
-    }, [pageLoading]);
+    }, [pageLoading, pageError.show]);
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEventListener('mouseup', () => {
-        console.log(222, chart.current)
+        // console.log(222, chart.current)
         if (chart.current) {
             chart.current.dispatchAction({
                 type: 'hideTip'
@@ -64,6 +170,7 @@ export default function StockInfo() {
                 type: 'updateAxisPointer',
                 currTrigger: 'leave'
             });
+            initDemoData();
         }
     }, { target: document.body })
 
@@ -87,7 +194,7 @@ export default function StockInfo() {
     // }, { target: document.body, passive: true })
 
     const drawTodayChart = () => {
-        const data = response.current.timelineData.dataResult[0].lineChartComp.value;
+        const data = response.current.timelineData;
         console.log(222, response.current.timelineData, data)
         const list: number[] = [];
         const xList: string[] = [];
@@ -99,7 +206,7 @@ export default function StockInfo() {
     }
 
     const drawMonthChart = () => {
-        const data = response.current.kLineData.dataResult[0].lineChartComp.value;
+        const data = response.current.kLineData;
         console.log(222, response.current.kLineData, data)
         const dateList: string[] = [];
         const kLineChart: number[][] = [];
@@ -137,51 +244,73 @@ export default function StockInfo() {
         )
     }
 
+    if (pageError.show) {
+        return (
+            <ResultPage
+                status='error'
+                title={ pageError.title }
+                description={ pageError.desc }
+                secondaryButtonText='返回上一页'
+                onSecondaryButtonClick={back}
+            />
+        )
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.stockInfo}>
                 <div className={styles.stockName}>{ name }</div>
-                <div className={styles.stockCode}>（002340）</div>
+                <div className={styles.stockCode}>（{ secucode }）</div>
             </div>
             <div className={styles.stockData}>
                 <div className={styles.priceData}>
-                    <div className={styles.price}>6.56</div>
-                    <div className={styles.upPrice}>0.45 7.36%</div>
+                    <div className={styles.price}><RandomPercent number={demoData.close} floatCount={2} symbol={false} percentSymbol={false} /></div>
+                    <div className={styles.upPrice}>
+                        <RandomPercent number={demoData.close - demoData.open} floatCount={2} symbol={false} percentSymbol={false} />
+                        &nbsp;
+                        <RandomPercent number={(demoData.close - demoData.open) / demoData.open * 100} floatCount={2} symbol={false} />
+                    </div>
                 </div>
                 <div className={styles.tranactionData}>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>高：</span>
-                        <span className={styles.dataValue}>6.70</span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.highest} number={demoData.highest} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>低：</span>
-                        <span className={styles.dataValue}>6.70</span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.lowest} number={demoData.lowest} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                 </div>
                 <div className={styles.tranactionData}>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>开：</span>
-                        <span className={styles.dataValue}>6.70</span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.open} number={demoData.open} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>换：</span>
-                        <span className={styles.dataValue}>9.13%</span>
+                        <span className={styles.dataValue}>
+                            <RandomPercent min={3} symbol={false} />
+                        </span>
                     </div>
                 </div>
                 <div className={styles.tranactionData}>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>量：</span>
-                        <span className={styles.dataValue}>234万手</span>
+                        <span className={styles.dataValue}>
+                            <RandomPercent min={1} max={10} floatCount={1} symbol={false} percentSymbol={false} suffix={'万手'} />
+                        </span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>额：</span>
-                        <span className={styles.dataValue}>6.70亿</span>
+                        <span className={styles.dataValue}>
+                            <RandomPercent min={20} max={100} symbol={false} floatCount={0} percentSymbol={false} suffix={'亿'} />
+                        </span>
                     </div>
                 </div>
             </div>
             <CapsuleTabs activeKey={activeKey} onChange={onChange} className={styles.dateSelect}>
-                <CapsuleTabs.Tab title='今日' key='today' />
-                <CapsuleTabs.Tab title='1个月' key='month' />
+                <CapsuleTabs.Tab title='分时' key='today' />
+                <CapsuleTabs.Tab title='日K' key='month' />
             </CapsuleTabs>
             <div id="main" className={styles.chart} ></div>
             <div className={styles.section}>
@@ -197,22 +326,22 @@ export default function StockInfo() {
                                 <div className={styles.moneyFlowLabel}>净流入</div>
                             </div>
                             <div className={styles.moneyFlowValWrap}>
-                                <div className={styles.moneyFlowVal}>45235</div>
-                                <div className={styles.moneyFlowVal}>45235</div>
-                                <div className={styles.moneyFlowVal}>-45235</div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.mainInFlow} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.mainOutFlow} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.netFlow} symbol={false} percentSymbol={false} /></div>
                             </div>
                         </div>
                         <div className={styles.moneyFlowData}>
                             <div className={styles.moneyFlowLabelWrap}>
                                 <div className={styles.moneyFlowLabel}>大单</div>
-                                <div className={styles.moneyFlowLabel}>大单</div>
-                                <div className={styles.moneyFlowLabel}>大单</div>
+                                <div className={styles.moneyFlowLabel}>中单</div>
+                                <div className={styles.moneyFlowLabel}>小单</div>
                             </div>
                             <div id="moneyFlowChart" className={styles.moneyFlowChart}></div>
                             <div className={styles.moneyFlowValWrap}>
-                                <div className={styles.moneyFlowVal}>12345</div>
-                                <div className={styles.moneyFlowVal}>2345</div>
-                                <div className={styles.moneyFlowVal}>23456</div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.bigOrder} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.midOrder} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.smallOrder} symbol={false} percentSymbol={false} /></div>
                             </div>
                         </div>
                     </div>
@@ -227,31 +356,37 @@ export default function StockInfo() {
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>开盘价：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.open} floatCount={2} number={demoData.open} symbol={false} percentSymbol={false} /></div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>均价：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent color={false} min={20} max={50} symbol={false} percentSymbol={false} />
+                                </div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>最高价：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={1} floatCount={2} number={demoData.highest} symbol={false} percentSymbol={false} /></div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>最低价：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={-1} floatCount={2} number={demoData.lowest} symbol={false} percentSymbol={false} /></div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>量比：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={30} max={80} percentSymbol={false} />
+                                </div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>换手率：</div>
-                                <div className={styles.transactionDataValue}>45.3%</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={5} max={50} />
+                                </div>
                             </div>
                         </Grid.Item>
                     </Grid>
@@ -260,31 +395,39 @@ export default function StockInfo() {
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>涨停：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue + ` upColor`}>{ (parseFloat(demoData.open + '') * 1.1).toFixed(2) }</div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>跌停：</div>
-                                <div className={styles.transactionDataValue}>45.3</div>
+                                <div className={styles.transactionDataValue + ` downColor`}>{ (parseFloat(demoData.open + '') * 0.9).toFixed(2) }</div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>总手：</div>
-                                <div className={styles.transactionDataValue}>4533万</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={1000} max={5000} symbol={false} percentSymbol={false} suffix={'万'} />
+                                </div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>金额：</div>
-                                <div className={styles.transactionDataValue}>45.3亿</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={20} max={50} symbol={false} percentSymbol={false} suffix={'亿'} />
+                                </div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>振幅：</div>
-                                <div className={styles.transactionDataValue}>45%</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={10} max={100} symbol={false} />
+                                </div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>委比：</div>
-                                <div className={styles.transactionDataValue}>45.32%</div>
+                                <div className={styles.transactionDataValue}>
+                                    <RandomPercent min={10} max={100} symbol={false} />
+                                </div>
                             </div>
                         </Grid.Item>
                     </Grid>
@@ -299,29 +442,41 @@ export default function StockInfo() {
                         <Grid.Item>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>3日涨跌幅：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent />
+                                </div>
                             </div>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>3日日均换手率：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent min={1} symbol={false} />
+                                </div>
                             </div>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>3日日均成交额：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent min={100000} max={200000} floatCount={2} symbol={false} percentSymbol={false} suffix={''} />
+                                </div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>5日涨跌幅：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent />
+                                </div>
                             </div>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>5日日均换手率：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent min={1} symbol={false} />
+                                </div>
                             </div>
                             <div className={styles.intervalData}>
                                 <div className={styles.intervalDataLabel}>5日日均成交额：</div>
-                                <div className={styles.intervalDataValue}></div>
+                                <div className={styles.intervalDataValue}>
+                                    <RandomPercent min={200000} max={500000} floatCount={2} symbol={false} percentSymbol={false} suffix={''} />
+                                </div>
                             </div>
                         </Grid.Item>
                     </Grid>
