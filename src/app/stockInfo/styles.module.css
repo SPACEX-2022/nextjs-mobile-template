@@ -249,7 +249,7 @@
 }
 
 .divisionLine {
-    margin: 8px 0;
+    margin: 4px 0 8px;
     /* 颜色-边框/一般 */
     border-top: 1px dashed rgb(229, 230, 235);
 }
