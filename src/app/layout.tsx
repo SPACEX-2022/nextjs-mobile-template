@@ -47,7 +47,7 @@ export default function RootLayout({
             {children}
         </Suspense>
         <Script
-            src="./amfe-flexible.js"
+            src="/amfe-flexible.js"
             strategy="beforeInteractive"
         />
         </body>

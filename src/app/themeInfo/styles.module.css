@@ -35,7 +35,7 @@
     padding: 0 5px;
     /*writing-mode: vertical-lr;*/
     color: #1d2129;
-    /*white-space: pre;*/
+    white-space: pre;
     font-size: 16px;
     font-weight: 600;
     font-family: PingFangSC-Medium;
@@ -45,13 +45,14 @@
 .tableStockName {
     padding: 0 5px;
     /*writing-mode: vertical-lr;*/
-    color: #d02a00;
+    color: rgb(208, 42, 0);
     font-size: 14px;
     font-weight: 600;
     font-family: PingFangSC-Medium;
-    text-align: left;
+    text-align: center;
     line-height: 22px;
     white-space: pre;
+    user-select: none;
 }
 .tableStockDesc {
     padding: 3px;

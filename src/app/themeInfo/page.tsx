@@ -11,49 +11,64 @@ export default function ThemeInfo() {
     const searchParams = useSearchParams()
     const [dataIndex, setIndex] = useState(0);
 
-    const count = useMemo(() => {
-        return data[dataIndex].children.reduce((acc, curr) => acc + curr.children.length, 0);
-    }, [])
-
     useEffect(() => {
         console.log(searchParams)
         const index = searchParams.get('index')
         setIndex(parseInt(index!));
-        document.title = data[index! as any].name.replace(/\n/g, "");
+        document.title = data[index! as any][0][0].val!.replace(/\n/g, "");
     }, []);
 
     const viewStock = () => {
         router.push('stockInfo')
     }
 
-    let index = -1;
     return (
         <div className={styles.wrapper}>
             <table className={styles.table}>
                 <tbody>
                     {
-                        [data[dataIndex]].map((item, itemIndex) => {
-                            return item.children.map((plate, plateIndex) => {
-                                return plate.children.map((child, childIndex) => {
-                                    index++;
-                                    return (
-                                        <tr key={child.name}>
-                                            {
-                                                index === 0 ?
-                                                    <td className={styles.tableThemeTitle} rowSpan={count}>{ item.name }</td>
-                                                    : null
+                        data[dataIndex].map((row, rowIndex, itemIndex) => {
+                            return (
+                                <tr key={rowIndex}>
+                                    {
+                                        row.map((col, colIndex) => {
+                                            if (colIndex === 0 || col.val == null) return null
+                                            let arr = [1, ...new Array(row.length - 4).fill(1).map((i, index) => {
+                                                return index + 2;
+                                            })];
+                                            if (arr.includes(colIndex)) {
+                                                let attr: Record<string, any> = {};
+                                                if (col.rowSpan > 1) {
+                                                    attr.rowSpan = col.rowSpan;
+                                                }
+                                                if (col.colSpan > 1) {
+                                                    attr.colSpan = col.colSpan;
+                                                }
+                                                return (
+                                                    <td key={colIndex}
+                                                        className={styles.tablePlateTitle}
+                                                        { ...attr }
+                                                    >
+                                                        {col.val}
+                                                    </td>
+                                                )
+                                            } else if (colIndex === row.length - 2) {
+                                                return (
+                                                    <td key={colIndex}
+                                                        className={styles.tableStockName}
+                                                        onClick={viewStock}>
+                                                        {col.val}
+                                                    </td>
+                                                )
+                                            } else {
+                                                return (
+                                                    <td key={colIndex} className={styles.tableStockDesc}>{col.val}</td>
+                                                )
                                             }
-                                            {
-                                                childIndex === 0 ?
-                                                    <td className={styles.tablePlateTitle} rowSpan={plate.children.length}>{ plate.name }</td>
-                                                    : null
-                                            }
-                                            <td className={styles.tableStockName} onClick={viewStock}>{ child.name }</td>
-                                            <td className={styles.tableStockDesc}>{ child.desc }</td>
-                                        </tr>
-                                    )
-                                })
-                            })
+                                        })
+                                    }
+                                </tr>
+                            )
                         })
                     }
                 </tbody>
