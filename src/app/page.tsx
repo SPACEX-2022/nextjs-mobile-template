@@ -60,7 +60,7 @@ export default function Home() {
                         <List.Item key={row[0][0].val} className={styles.listItem} onClick={() => onClick(index)}>
                             { index <= 2 ? <img className={styles.listItemRankImg} src={imgRankList[index]} alt=""/> : null }
                             <img className={styles.listItemImg} src={imgList[index] || imgList[0]} alt=""/>
-                            {row[0][0].val.replace(/\n/g, '')}
+                            {row[0][0].val!.replace(/\n/g, '')}
                         </List.Item>
                     ))
                 }

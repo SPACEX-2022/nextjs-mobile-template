@@ -36,3 +36,11 @@ body {
     text-wrap: balance;
   }
 }
+
+.upColor {
+  color: #D02A00;
+}
+
+.downColor {
+  color: #007C57;
+}

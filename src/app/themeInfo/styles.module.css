@@ -8,6 +8,28 @@
     table-layout: auto;
 }
 
+.tHeader {
+    position: relative;
+    padding: 8px 0;
+    background: #4e5969;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: "苹方-简";
+    text-align: center;
+}
+.tHeaderPercent {
+    position: absolute;
+    right: 22px;
+    bottom: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "苹方-简";
+    text-align: justify;
+    line-height: 16px;
+}
+
 .table td {
     border: 1px solid #C9CDD4;
 }
@@ -41,6 +63,21 @@
     font-family: PingFangSC-Medium;
     text-align: center;
     line-height: 26px;
+}
+.tablePlateTitleWrapper {
+    position: relative;
+}
+.tablePlateTitlePercent {
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    /*color: #d02a00;*/
+    font-size: 10px;
+    font-weight: 400;
+    font-family: "苹方-简";
+    text-align: justify;
+    line-height: 16px;
 }
 .tableStockName {
     padding: 0 5px;

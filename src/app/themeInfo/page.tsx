@@ -5,6 +5,7 @@ import {request} from "@/services";
 import {useRouter, useSearchParams} from "next/navigation";
 import {data} from "@/app/data";
 import {Metadata} from "next";
+import {RandomPercent} from "@/utils";
 
 export default function ThemeInfo() {
     const router = useRouter();
@@ -22,9 +23,21 @@ export default function ThemeInfo() {
         router.push('stockInfo')
     }
 
+    const head = data[dataIndex][0];
+
     return (
         <div className={styles.wrapper}>
             <table className={styles.table}>
+                <thead>
+                    <tr>
+                        <th className={styles.tHeader} colSpan={head.length}>
+                            { head[0].val!.replace(/\n/g, '') }
+                            <span className={styles.tHeaderPercent}>
+                                <RandomPercent color={false} />
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
                 <tbody>
                     {
                         data[dataIndex].map((row, rowIndex, itemIndex) => {
@@ -49,7 +62,12 @@ export default function ThemeInfo() {
                                                         className={styles.tablePlateTitle}
                                                         { ...attr }
                                                     >
-                                                        {col.val}
+                                                        <div className={styles.tablePlateTitleWrapper}>
+                                                            {col.val}
+                                                            <div className={styles.tablePlateTitlePercent}>
+                                                                <RandomPercent />
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 )
                                             } else if (colIndex === row.length - 2) {
