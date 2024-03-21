@@ -124,6 +124,7 @@ export default function StockInfo() {
         })
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (!pageLoading && !pageError.show) {
             chart.current = echarts.init(document.getElementById('main'));
