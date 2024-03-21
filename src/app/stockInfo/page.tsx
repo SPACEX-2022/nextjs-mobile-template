@@ -57,7 +57,7 @@ export default function StockInfo() {
     useEffect(() => {
         document.title = name!;
 
-        request('/api/visual/dict/szbCompanyQry',{
+        request('/api/visual/dict/companyQry',{
             method: 'POST',
             body: JSON.stringify({ criterion: name }),
         }).then((res) => {
@@ -68,15 +68,17 @@ export default function StockInfo() {
                 throw new Error();
             }
 
-            // setSecucode(res.dataResult.chiNameMatch[0].secucode)
+            const prodCode = '000001.SH'
+            // const prodCode = res.dataResult.prodShortnameMatch[0].prodCode
+            setSecucode(prodCode)
             return Promise.all([
                 request('/api/visual/data/common/timeline',{
                     method: 'POST',
-                    body: JSON.stringify({ code: secucode, time: 1710731514000 }),
+                    body: JSON.stringify({ code: prodCode, time: 1710731514000 }),
                 }),
                 request('/api/visual/data/common/kline',{
                     method: 'POST',
-                    body: JSON.stringify({ code: secucode, time: 1710731514000 }),
+                    body: JSON.stringify({ code: prodCode, time: 1710731514000 }),
                 }),
             ])
         }).then(([timelineData, kLineData]) => {

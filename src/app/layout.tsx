@@ -3,7 +3,7 @@ import {Inter} from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import {Suspense} from "react";
+import React, {Suspense} from "react";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -41,12 +41,13 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" style={{ fontSize: "37.5px" }}>
         <body className={inter.className}>
         <Suspense>
             {children}
         </Suspense>
         <Script
+            type="text/javascript"
             src="/amfe-flexible.js"
             strategy="beforeInteractive"
         />

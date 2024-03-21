@@ -1,5 +1,9 @@
 import * as echarts from "echarts";
 
+function calcColor(num: number) {
+    return num > 0 ? '#ef232a' : '#14b143';
+}
+
 export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
 // prettier-ignore
     const colorList = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622', '#bda29a', '#6e7074', '#546570', '#c4ccd3'];
@@ -53,7 +57,56 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
             textStyle: {
                 color: '#000'
             },
-            // formatter: '{}: {}',
+            formatter: (params: any) => {
+                console.log(params);
+                const [{ axisValue, borderColor, data: [,open, close, lowest, highest], dataIndex }] = params;
+                const yesterdayClose = dataIndex === 0 ? data[0][0] : data[dataIndex - 1][1];
+                return `
+<div style="margin: 0px 0 0;line-height:1;">
+    <div style="margin: 0px 0 0;line-height:1;">
+        <div style="font-size:14px;color:#000;font-weight:400;line-height:1;">${axisValue}</div>
+        <div style="margin: 10px 0 0;line-height:1;">
+            <div style="margin: 0px 0 0;line-height:1;">
+                <div style="margin: 0px 0 0;line-height:1;"><span
+                        style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${borderColor};"></span><span
+                        style="font-size:14px;color:#000;font-weight:400;margin-left:2px">日K</span><span
+                        style="float:right;margin-left:20px;font-size:14px;color:#000;font-weight:900"></span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="margin: 10px 0 0;line-height:1;"><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(open - yesterdayClose)};"></span><span
+                        style="font-size:14px;color:#000;font-weight:400;margin-left:2px">开</span><span
+                        style="float:right;margin-left:20px;font-size:14px;color:${calcColor(open - yesterdayClose)};font-weight:900">${open}</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="margin: 10px 0 0;line-height:1;"><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(close - yesterdayClose)};"></span><span
+                        style="font-size:14px;color:#000;font-weight:400;margin-left:2px">收</span><span
+                        style="float:right;margin-left:20px;font-size:14px;color:${calcColor(close - yesterdayClose)};font-weight:900">${close}</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="margin: 10px 0 0;line-height:1;"><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(-1)};"></span><span
+                        style="font-size:14px;color:#000;font-weight:400;margin-left:2px">低</span><span
+                        style="float:right;margin-left:20px;font-size:14px;color:#000;font-weight:900">${lowest}</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="margin: 10px 0 0;line-height:1;"><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(1)};"></span><span
+                        style="font-size:14px;color:#000;font-weight:400;margin-left:2px">高</span><span
+                        style="float:right;margin-left:20px;font-size:14px;color:#000;font-weight:900">${highest}</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+            <div style="clear:both"></div>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+    <div style="clear:both"></div>
+</div>
+                `
+            },
             // position: function (pos, params, el, elRect, size) {
             //     const obj = {
             //         top: 10
