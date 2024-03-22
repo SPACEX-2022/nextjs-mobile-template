@@ -5,7 +5,20 @@ export function random(min: number, max: number, floatCount: number = 0) {
     return parseFloat(_.random(min, max, floatCount !== 0).toFixed(floatCount));
 }
 
-export function RandomPercent(props: { min?: number, max?: number, floatCount?: number, color?: boolean, symbol?: boolean, percentSymbol?: boolean, suffix?: string, number?: number, ruler?: number }) {
+interface RandomPercentProps {
+    min?: number,
+    max?: number,
+    floatCount?: number,
+    color?: boolean,
+    symbol?: boolean,
+    percentSymbol?: boolean,
+    suffix?: string,
+    number?: number,
+    ruler?: number,
+    noDecimalZeros?: boolean,
+}
+
+export function RandomPercent(props: RandomPercentProps) {
     const {
         min = -10,
         max = 10,
@@ -16,6 +29,7 @@ export function RandomPercent(props: { min?: number, max?: number, floatCount?: 
         suffix = '',
         number ,
         ruler ,
+        noDecimalZeros = false,
     } = props;
 
     const [num, setNum] = useState(number == null ? random(min, max, floatCount) : number)
@@ -36,6 +50,6 @@ export function RandomPercent(props: { min?: number, max?: number, floatCount?: 
     }
 
     return (
-        <span className={fontClass}>{prefix}{String(num).split('.').length > 1 ? num.toFixed(floatCount) : num}{percentSymbol ? '%' : '' }{ suffix }</span>
+        <span className={fontClass}>{prefix}{noDecimalZeros ? (String(num).split('.').length > 1 ? num.toFixed(floatCount) : num) : num.toFixed(floatCount)}{percentSymbol ? '%' : '' }{ suffix }</span>
     )
 }

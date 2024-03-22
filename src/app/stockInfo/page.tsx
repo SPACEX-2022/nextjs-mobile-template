@@ -33,12 +33,13 @@ export default function StockInfo() {
         vol: random(100, 1000),
         turnoverRate: random(1, 10, 2),
         limit: random(1, 10, 2),
-        mainInFlow: random(10000, 100000),
-        mainOutFlow: random(10000, 100000),
-        netFlow: random(-50000, 50000),
-        bigOrder: random(-50000, 50000),
-        midOrder: random(-50000, 50000),
-        smallOrder: random(-50000, 50000),
+        mainInFlow: random(1, 10, 2),
+        mainOutFlow: random(1, 10, 2),
+        netFlow: random(1, 10, 2),
+        largeOrder: 1.94 || random(-3, 3, 2),
+        bigOrder: -0.87 || random(-3, 3, 2),
+        midOrder: -1.27 || random(-3, 3, 2),
+        smallOrder: 0.19 || random(-3, 3, 2),
     })
     const [demoData, setDemoData] = useSetState({
         yesterdayClose: 0,
@@ -74,11 +75,11 @@ export default function StockInfo() {
             return Promise.all([
                 request('/api/visual/data/common/timeline',{
                     method: 'POST',
-                    body: JSON.stringify({ code: prodCode, time: 1710731514000 }),
+                    body: JSON.stringify({ code: prodCode, time: 1710991010000 }),
                 }),
                 request('/api/visual/data/common/kline',{
                     method: 'POST',
-                    body: JSON.stringify({ code: prodCode, time: 1710731514000 }),
+                    body: JSON.stringify({ code: prodCode, time: 1710991010000 }),
                 }),
             ])
         }).then(([timelineData, kLineData]) => {
@@ -133,7 +134,7 @@ export default function StockInfo() {
 
             // drawTimeShareChart('main')
             // drawKLineChart('main')
-            drawMoneyFlowChart('moneyFlowChart', [demoData.bigOrder, demoData.midOrder, demoData.smallOrder].reverse())
+            drawMoneyFlowChart('moneyFlowChart', [demoData.largeOrder, demoData.bigOrder, demoData.midOrder, demoData.smallOrder])
 
             drawTodayChart();
             chart.current.on('showTip', (e: any) => {
@@ -292,7 +293,7 @@ export default function StockInfo() {
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>换：</span>
                         <span className={styles.dataValue}>
-                            <RandomPercent color={false} min={3} symbol={false} />
+                            <RandomPercent color={false} floatCount={2} min={3} symbol={false} />
                         </span>
                     </div>
                 </div>
@@ -306,7 +307,7 @@ export default function StockInfo() {
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>额：</span>
                         <span className={styles.dataValue}>
-                            <RandomPercent color={false} min={20} max={100} symbol={false} floatCount={0} percentSymbol={false} suffix={'亿'} />
+                            <RandomPercent color={false} min={20} max={100} symbol={false} floatCount={1} percentSymbol={false} suffix={'亿'} />
                         </span>
                     </div>
                 </div>
@@ -318,7 +319,7 @@ export default function StockInfo() {
             <div id="main" className={styles.chart} ></div>
             <div className={styles.section}>
                 <div className={styles.sectionTitle}>
-                    今日资金流向（万元）
+                    今日资金流向（亿元）
                 </div>
                 <div className={styles.sectionContent}>
                     <div className={styles.moneyFlowDataWrapper}>
@@ -329,23 +330,23 @@ export default function StockInfo() {
                                 <div className={styles.moneyFlowLabel}>净流入</div>
                             </div>
                             <div className={styles.moneyFlowValWrap}>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.mainInFlow} symbol={false} percentSymbol={false} /></div>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.mainOutFlow} symbol={false} percentSymbol={false} /></div>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.netFlow} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={2} number={demoData.mainInFlow} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={2} number={demoData.mainOutFlow} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={2} number={demoData.netFlow} symbol={false} percentSymbol={false} /></div>
                             </div>
                         </div>
                         <div className={styles.moneyFlowData}>
-                            <div className={styles.moneyFlowLabelWrap}>
-                                <div className={styles.moneyFlowLabel}>大单</div>
-                                <div className={styles.moneyFlowLabel}>中单</div>
-                                <div className={styles.moneyFlowLabel}>小单</div>
-                            </div>
+                            {/*<div className={styles.moneyFlowLabelWrap}>*/}
+                            {/*    <div className={styles.moneyFlowLabel}>大单</div>*/}
+                            {/*    <div className={styles.moneyFlowLabel}>中单</div>*/}
+                            {/*    <div className={styles.moneyFlowLabel}>小单</div>*/}
+                            {/*</div>*/}
                             <div id="moneyFlowChart" className={styles.moneyFlowChart}></div>
-                            <div className={styles.moneyFlowValWrap}>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.bigOrder} symbol={false} percentSymbol={false} /></div>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.midOrder} symbol={false} percentSymbol={false} /></div>
-                                <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.smallOrder} symbol={false} percentSymbol={false} /></div>
-                            </div>
+                            {/*<div className={styles.moneyFlowValWrap}>*/}
+                            {/*    <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.bigOrder} symbol={false} percentSymbol={false} /></div>*/}
+                            {/*    <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.midOrder} symbol={false} percentSymbol={false} /></div>*/}
+                            {/*    <div className={styles.moneyFlowVal}><RandomPercent floatCount={0} number={demoData.smallOrder} symbol={false} percentSymbol={false} /></div>*/}
+                            {/*</div>*/}
                         </div>
                     </div>
                 </div>

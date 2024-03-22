@@ -466,24 +466,38 @@ export function drawMoneyFlowChart(id: string, data: number[]) {
             }
         },
         grid: {
-            top: -4.5,
-            bottom: -4.5,
+            top: 0,
+            bottom: 20,
             left: 0,
             right: 0,
         },
         xAxis: {
-            type: 'value',
-            show: false,
-            position: 'top',
+            type: 'category',
+            show: true,
+            position: 'bottom',
+            data: ['超大单', '大单', '中单', '小单'],
             splitLine: {
                 show: false,
                 lineStyle: {
                     type: 'dashed'
                 }
+            },
+            axisLabel: {
+              color: 'rgb(29, 33, 41)'
+            },
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: 'rgb(229, 230, 235)'
+                }
+            },
+            axisTick: {
+                show: false
             }
         },
         yAxis: {
-            type: 'category',
+            type: 'value',
+            show: false,
             // boundaryGap: false,
             axisLine: { show: true, lineStyle: {color: 'rgb(201, 205, 212)'  } },
             axisLabel: { show: false },
@@ -496,16 +510,16 @@ export function drawMoneyFlowChart(id: string, data: number[]) {
                 type: 'bar',
                 stack: 'Total',
                 // barGap: 10,
-                barCategoryGap: 9,
-                // barWidth: 12,
+                // barCategoryGap: 9,
+                barWidth: '40%',
                 itemStyle: {
-                    color: ({ dataIndex, data }: any) => data.value > 0 ? 'rgb(255, 64, 17)' : 'rgb(0, 124, 87)',
+                    color: ({ dataIndex, data }: any) => data.value > 0 ? 'rgb(238, 90, 90)' : 'rgb(54, 174, 51)',
                 },
                 label: {
-                    show: false,
-                    formatter: '{b}'
+                    show: true,
+                    formatter: '{c}'
                 },
-                data: data.map(i => ({ value: i, label: { position: i > 0 ? 'right' : 'left' } }))
+                data: data.map(i => ({ value: i, label: { position: i > 0 ? 'bottom' : 'top' } }))
             }
         ]
     };
