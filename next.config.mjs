@@ -1,15 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // output: 'export',
-    output: 'standalone',
+    basePath: '/tck',
+    output: 'export',
+    // output: 'standalone',
     images: {
         unoptimized: true,
     },
     rewrites: () => {
         return [
             {
-                source: '/api/:path*',
+                source: '/magicvideo/:path*',
                 destination: 'https://magictest.dinglitec.com/magicvideo/:path*',
+                basePath: false,
             }
         ]
     },

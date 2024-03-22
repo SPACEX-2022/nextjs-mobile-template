@@ -58,7 +58,7 @@ export default function StockInfo() {
     useEffect(() => {
         document.title = name!;
 
-        request('/api/visual/dict/companyQry',{
+        request('/magicvideo/visual/dict/companyQry',{
             method: 'POST',
             body: JSON.stringify({ criterion: name }),
         }).then((res) => {
@@ -69,15 +69,15 @@ export default function StockInfo() {
                 throw new Error();
             }
 
-            const prodCode = '000001.SH'
-            // const prodCode = res.dataResult.prodShortnameMatch[0].prodCode
+            // const prodCode = '000001.SH'
+            const prodCode = res.dataResult.prodShortnameMatch[0].prodCode
             setSecucode(prodCode)
             return Promise.all([
-                request('/api/visual/data/common/timeline',{
+                request('/magicvideo/visual/data/common/timeline',{
                     method: 'POST',
                     body: JSON.stringify({ code: prodCode, time: 1710991010000 }),
                 }),
-                request('/api/visual/data/common/kline',{
+                request('/magicvideo/visual/data/common/kline',{
                     method: 'POST',
                     body: JSON.stringify({ code: prodCode, time: 1710991010000 }),
                 }),

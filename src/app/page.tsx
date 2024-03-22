@@ -42,11 +42,11 @@ const imgRankList = [
 export default function Home() {
     const router = useRouter()
     const onClick = (index: number) => {
-        router.push('themeInfo?index=' + index)
+        router.push('/themeInfo?index=' + index)
     }
 
     useEffect(() => {
-        router.prefetch('themeInfo')
+        router.prefetch('/themeInfo')
     }, [])
 
     return (
