@@ -502,7 +502,7 @@ export default function StockInfo() {
                         </li>
                         <li className={styles.clueLi}>
                             <div className={styles.clueTime}>
-                                2024-10-09
+                                2023-10-09
                             </div>
                             <div className={styles.clueLine}></div>
                             <div className={styles.clueText}>
