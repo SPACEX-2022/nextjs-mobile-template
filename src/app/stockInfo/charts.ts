@@ -1,4 +1,5 @@
 import * as echarts from "echarts";
+import _ from "lodash";
 
 function calcColor(num: number) {
     if (num > 0) {
@@ -353,6 +354,18 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
 }
 
 export function drawTimeShareChart(chart: any, xList: string[], list: number[]) {
+    const sortList = list.slice(0).sort((a, b) => a - b);
+    let min = sortList[0];
+    let max = sortList[sortList.length - 1];
+    const diff = _.round(max - min, 2);
+    min -= diff;
+    max += diff;
+    min = _.round(min, 2);
+    max = _.round(max, 2);
+    let yInterval = _.round(max - min, 2) / 2;
+    yInterval = _.round(yInterval, 2);
+    console.log('yInterval', yInterval, max, min, sortList)
+
     const intervalList = [
         Math.ceil(xList.length / 5) * 1,
         Math.ceil(xList.length / 5) * 2,
@@ -416,8 +429,12 @@ export function drawTimeShareChart(chart: any, xList: string[], list: number[]) 
         yAxis: {
             type: 'value',
             scale: true,
-            splitNumber: 1,
+            interval: yInterval,
+            // splitNumber: 1,
             // boundaryGap: false,
+            // interval: 10,
+            min: min,
+            max: max,
             axisLine: {
                 lineStyle: {
                     color: 'rgb(204, 204, 204)'
@@ -425,17 +442,21 @@ export function drawTimeShareChart(chart: any, xList: string[], list: number[]) 
             },
             axisLabel: {
                 inside: true,
+                interval: 0,
                 margin: 4,
                 lineHeight: 20,
+                // showMinLabel: true,
+                // showMaxLabel: true,
                 verticalAlignMinLabel: 'bottom',
                 verticalAlignMaxLabel: 'top',
                 color: function (value: number, index: number) {
-                    // console.log(index);
+                    console.log('axisLabel', index);
                     return ['red', 'black', 'green'].reverse()[index];
                 }
             },
             splitLine: {
                 show: true,
+                interval: 0,
                 lineStyle: {
                     color: 'rgb(204, 204, 204)'
                 }
