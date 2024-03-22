@@ -91,7 +91,7 @@
 }
 
 .upPrice {
-    color: rgb(255, 64, 17);
+    /*color: rgb(255, 64, 17);*/
     font-family: 苹方-简;
     font-size: 12px;
     font-weight: 400;
@@ -175,7 +175,7 @@
     text-align: left;
 }
 .dataValue {
-    color: rgb(255, 64, 17);
+    color: rgb(29, 33, 41);
     font-family: 苹方-简;
     font-size: 12px;
     font-weight: 400;

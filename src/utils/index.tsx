@@ -28,9 +28,9 @@ export function RandomPercent(props: { min?: number, max?: number, floatCount?: 
 
     let fontClass = '';
     let prefix = '';
-    if ((ruler || num) < 0) {
+    if ((ruler == null ? num : ruler) < 0) {
         if (color) fontClass = 'downColor';
-    } else if ((ruler || num) > 0) {
+    } else if ((ruler == null ? num : ruler) > 0) {
         if (color) fontClass = 'upColor';
         if (symbol) prefix = '+';
     }

@@ -148,7 +148,7 @@ export default function StockInfo() {
                     const [, open, close, lowest, highest, quoteChange, riseAndFallVal] = response.current.kLineData.slice(1)[dataIndex];
                     console.log(open, close)
                     setDemoData({
-                        // yesterdayClose: parseFloat(yesterdayClose),
+                        yesterdayClose: parseFloat(dataIndex === 0 ? response.current.kLineData.slice(1)[dataIndex][1] : response.current.kLineData.slice(1)[dataIndex - 1][2]),
                         open: parseFloat(open),
                         close: parseFloat(close),
                         lowest: parseFloat(lowest),
@@ -267,32 +267,32 @@ export default function StockInfo() {
             </div>
             <div className={styles.stockData}>
                 <div className={styles.priceData}>
-                    <div className={styles.price}><RandomPercent number={demoData.close} floatCount={2} symbol={false} percentSymbol={false} /></div>
+                    <div className={styles.price}><RandomPercent ruler={demoData.close - demoData.yesterdayClose} number={demoData.close} floatCount={2} symbol={false} percentSymbol={false} /></div>
                     <div className={styles.upPrice}>
-                        <RandomPercent number={demoData.close - demoData.open} floatCount={2} symbol={false} percentSymbol={false} />
+                        <RandomPercent ruler={demoData.close - demoData.yesterdayClose} number={demoData.close - demoData.open} floatCount={2} symbol={false} percentSymbol={false} />
                         &nbsp;
-                        <RandomPercent number={(demoData.close - demoData.open) / demoData.open * 100} floatCount={2} symbol={false} />
+                        <RandomPercent ruler={demoData.close - demoData.yesterdayClose} number={(demoData.close - demoData.open) / demoData.open * 100} floatCount={2} symbol={false} />
                     </div>
                 </div>
                 <div className={styles.tranactionData}>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>高：</span>
-                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.highest} number={demoData.highest} floatCount={2} symbol={false} percentSymbol={false} /></span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.highest - demoData.yesterdayClose} number={demoData.highest} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>低：</span>
-                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.lowest} number={demoData.lowest} floatCount={2} symbol={false} percentSymbol={false} /></span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.lowest - demoData.yesterdayClose} number={demoData.lowest} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                 </div>
                 <div className={styles.tranactionData}>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>开：</span>
-                        <span className={styles.dataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.open} number={demoData.open} floatCount={2} symbol={false} percentSymbol={false} /></span>
+                        <span className={styles.dataValue}><RandomPercent ruler={demoData.open - demoData.yesterdayClose} number={demoData.open} floatCount={2} symbol={false} percentSymbol={false} /></span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>换：</span>
                         <span className={styles.dataValue}>
-                            <RandomPercent min={3} symbol={false} />
+                            <RandomPercent color={false} min={3} symbol={false} />
                         </span>
                     </div>
                 </div>
@@ -300,13 +300,13 @@ export default function StockInfo() {
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>量：</span>
                         <span className={styles.dataValue}>
-                            <RandomPercent min={1} max={10} floatCount={1} symbol={false} percentSymbol={false} suffix={'万手'} />
+                            <RandomPercent color={false} min={1} max={10} floatCount={1} symbol={false} percentSymbol={false} suffix={'万手'} />
                         </span>
                     </div>
                     <div className={styles.tranactionDataItem}>
                         <span className={styles.dataLabel}>额：</span>
                         <span className={styles.dataValue}>
-                            <RandomPercent min={20} max={100} symbol={false} floatCount={0} percentSymbol={false} suffix={'亿'} />
+                            <RandomPercent color={false} min={20} max={100} symbol={false} floatCount={0} percentSymbol={false} suffix={'亿'} />
                         </span>
                     </div>
                 </div>
@@ -359,7 +359,7 @@ export default function StockInfo() {
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>开盘价：</div>
-                                <div className={styles.transactionDataValue}><RandomPercent ruler={demoData.yesterdayClose - demoData.open} floatCount={2} number={demoData.open} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={demoData.open - demoData.yesterdayClose} floatCount={2} number={demoData.open} symbol={false} percentSymbol={false} /></div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>均价：</div>
@@ -371,11 +371,11 @@ export default function StockInfo() {
                         <Grid.Item>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>最高价：</div>
-                                <div className={styles.transactionDataValue}><RandomPercent ruler={1} floatCount={2} number={demoData.highest} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={demoData.highest - demoData.yesterdayClose} floatCount={2} number={demoData.highest} symbol={false} percentSymbol={false} /></div>
                             </div>
                             <div className={styles.transactionData}>
                                 <div className={styles.transactionDataLabel}>最低价：</div>
-                                <div className={styles.transactionDataValue}><RandomPercent ruler={-1} floatCount={2} number={demoData.lowest} symbol={false} percentSymbol={false} /></div>
+                                <div className={styles.transactionDataValue}><RandomPercent ruler={demoData.lowest - demoData.yesterdayClose} floatCount={2} number={demoData.lowest} symbol={false} percentSymbol={false} /></div>
                             </div>
                         </Grid.Item>
                         <Grid.Item>

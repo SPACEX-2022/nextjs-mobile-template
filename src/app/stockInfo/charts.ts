@@ -1,7 +1,13 @@
 import * as echarts from "echarts";
 
 function calcColor(num: number) {
-    return num > 0 ? '#ef232a' : '#14b143';
+    if (num > 0) {
+        return '#ef232a';
+    } else if (num < 0) {
+        return '#14b143';
+    } else {
+        return '#000';
+    }
 }
 
 export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
@@ -58,9 +64,14 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
                 color: '#000'
             },
             formatter: (params: any) => {
-                console.log(params);
+                // console.log(params);
                 const [{ axisValue, borderColor, data: [,open, close, lowest, highest], dataIndex }] = params;
                 const yesterdayClose = dataIndex === 0 ? data[0][0] : data[dataIndex - 1][1];
+
+                const openColor = calcColor(open - yesterdayClose);
+                const closeColor = calcColor(close - yesterdayClose);
+                const lowestColor = calcColor(lowest - yesterdayClose);
+                const highestColor = calcColor(highest - yesterdayClose);
                 return `
 <div style="margin: 0px 0 0;line-height:1;">
     <div style="margin: 0px 0 0;line-height:1;">
@@ -74,27 +85,27 @@ export function drawKLineChart(chart: any, dateList: string[], data: any[]) {
                     <div style="clear:both"></div>
                 </div>
                 <div style="margin: 10px 0 0;line-height:1;"><span
-                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(open - yesterdayClose)};"></span><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${openColor};"></span><span
                         style="font-size:14px;color:#000;font-weight:400;margin-left:2px">开</span><span
-                        style="float:right;margin-left:20px;font-size:14px;color:${calcColor(open - yesterdayClose)};font-weight:900">${open}</span>
+                        style="float:right;margin-left:20px;font-size:14px;color:${openColor};font-weight:900">${open}</span>
                     <div style="clear:both"></div>
                 </div>
                 <div style="margin: 10px 0 0;line-height:1;"><span
-                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(close - yesterdayClose)};"></span><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${closeColor};"></span><span
                         style="font-size:14px;color:#000;font-weight:400;margin-left:2px">收</span><span
-                        style="float:right;margin-left:20px;font-size:14px;color:${calcColor(close - yesterdayClose)};font-weight:900">${close}</span>
+                        style="float:right;margin-left:20px;font-size:14px;color:${closeColor};font-weight:900">${close}</span>
                     <div style="clear:both"></div>
                 </div>
                 <div style="margin: 10px 0 0;line-height:1;"><span
-                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(-1)};"></span><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${lowestColor};"></span><span
                         style="font-size:14px;color:#000;font-weight:400;margin-left:2px">低</span><span
-                        style="float:right;margin-left:20px;font-size:14px;color:#000;font-weight:900">${lowest}</span>
+                        style="float:right;margin-left:20px;font-size:14px;color:${lowestColor};font-weight:900">${lowest}</span>
                     <div style="clear:both"></div>
                 </div>
                 <div style="margin: 10px 0 0;line-height:1;"><span
-                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${calcColor(1)};"></span><span
+                        style="display:inline-block;vertical-align:middle;margin-right:8px;margin-left:3px;border-radius:4px;width:4px;height:4px;background-color:${highestColor};"></span><span
                         style="font-size:14px;color:#000;font-weight:400;margin-left:2px">高</span><span
-                        style="float:right;margin-left:20px;font-size:14px;color:#000;font-weight:900">${highest}</span>
+                        style="float:right;margin-left:20px;font-size:14px;color:${highestColor};font-weight:900">${highest}</span>
                     <div style="clear:both"></div>
                 </div>
                 <div style="clear:both"></div>
