@@ -483,7 +483,8 @@ export function drawMoneyFlowChart(id: string, data: number[]) {
                 }
             },
             axisLabel: {
-              color: 'rgb(29, 33, 41)'
+                color: 'rgb(29, 33, 41)',
+                interval: 0,
             },
             axisLine: {
                 show: true,
